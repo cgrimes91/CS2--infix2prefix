@@ -1,0 +1,45 @@
+// Chris Grimes
+// cs23001
+// lab assignment
+// compile clang++ infix2prefix.cpp ../string/string.cpp
+
+#include<iostream>
+#include<fstream>
+#include "../string/string.hpp"
+#include "../assembler/stack.hpp"
+
+void  infix2prefix(std::fstream& in){
+  String tmp;
+  stack<String> result;
+  while(!in.eof()){
+    in>>tmp;
+    while(tmp!=";"){
+      if(tmp== ")"){
+        String right= result.pop();
+        String oper= result.pop();
+        String left = result.pop();
+        String newExp= oper;
+        newExp+= left;
+        newExp+= right;
+        result.push(newExp);
+      }
+      else if(tmp!="("){
+        result.push(tmp);
+        String reset;
+        tmp=reset;
+      }
+      in>>tmp;
+    }
+    while(result.empty()!=0){
+      std::cout<<result.top();
+      result.pop();
+    }
+  }
+}
+int main(){
+  std::fstream file("data3-1.txt");
+  if(!file.is_open())
+    std::cout<<"Could not open said file"<<std::endl;
+  infix2prefix(file);
+  return 0;
+}
